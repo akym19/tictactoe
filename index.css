@@ -1,0 +1,112 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+:root {
+    --cell-size: 100px;
+    --mark-size: calc(var(--cell-size) * 0.9);
+}
+
+.gameBoard {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    grid-template-columns: repeat(3, auto);
+}
+
+.cell {
+    height: var(--cell-size);
+    width: var(--cell-size);
+    border: solid 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.cell.x,
+.cell.o {
+    cursor: not-allowed
+}
+
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+    border-top: none
+}
+
+.cell:last-child,
+.cell:nth-child(8),
+.cell:nth-child(7) {
+    border-bottom: none
+}
+
+.cell:nth-child(3n+1) {
+    border-left: none;
+}
+
+.cell:nth-child(3n+3) {
+    border-right: none;
+}
+
+.cell.x::before,
+.cell.x::after {
+    background-color: black;
+}
+
+.gameBoard.x .cell:not(.x):not(.o):hover::before,
+.gameBoard.x .cell:not(.x):not(.o):hover::after,
+.gameBoard.o .cell:not(.x):not(.o):hover::before {
+    background-color: lightgrey;
+}
+
+.cell.x::before,
+.cell.x::after,
+.gameBoard.x .cell:not(.x):not(.o):hover::before,
+.gameBoard.x .cell:not(.x):not(.o):hover::after {
+    content: '';
+    width: calc(var(--mark-size) * .15);
+    height: var(--mark-size);
+    position: absolute;
+}
+
+.cell.x::before,
+.gameBoard.x .cell:not(.x):not(.o):hover::before {
+    transform: rotate(45deg);
+}
+
+.cell.x::after,
+.gameBoard.x .cell:not(.x):not(.o):hover::after {
+    transform: rotate(-45deg);
+}
+
+.cell.o::before,
+.cell.o::after {
+    background-color: black;
+}
+
+.cell.o::before,
+.cell.o::after,
+.gameBoard.o .cell:not(.x):not(.o):hover::before,
+.gameBoard.o .cell:not(.x):not(.o):hover::after {
+    content: '';
+    border-radius: 50%;
+    position: absolute;
+}
+
+.cell.cell.o::before,
+.gameBoard.o .cell:not(.x):not(.o):hover::before {
+    width: var(--mark-size);
+    height: var(--mark-size);
+}
+
+.cell.o::after,
+.gameBoard.o .cell:not(.x):not(.o):hover::after {
+    width: calc(var(--mark-size) * 0.7);
+    height: calc(var(--mark-size) * 0.7);
+    background-color: white;
+}
