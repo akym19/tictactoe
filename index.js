@@ -5,19 +5,19 @@ const playerFactory = function (playerMark) {
 }
 
 const gameBoard = (() => {
-    // const boardSize = 3;
-    // const board = new Array(boardSize * boardSize).fill(null);
-    const board = 
-    ["x", "o", "",
-     "", "", "",
-     "", "", ""]
+    const boardSize = 3;
+    const board = new Array(boardSize * boardSize).fill("");
+    // const board = 
+    // ["x", "o", "x",
+    //  "o", "", "",
+    //  "", "", ""]
 
     const getBoard = () => {
        return board;
     }
 
     const placeMarker = (index, marker) => {
-        if (index >= 0 && index < board.length && board[index] === null) {
+        if (index >= 0 && index < board.length && board[index] === "") {
             board[index] = marker;
         }
     }
@@ -28,7 +28,7 @@ const gameBoard = (() => {
 
     const resetBoard = () => {
         for (let i = 0; i < board.length; i++) {
-            board[i] = null;
+            board[i] = "";
         }
     }
 
@@ -36,25 +36,71 @@ const gameBoard = (() => {
 })();
 
 const gameController = (() => {
-    playerX = playerFactory('x');
-    playerO = playerFactory('o');
-    const cells = document.querySelectorAll(".cell");
-    const cellsArray = Array.from(cells)
+    const playerX = playerFactory('x');
+    const playerO = playerFactory('o');
+    const winCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+    const checkSign = () => {
+        const round = gameBoard.getBoard().reduce((count, value) => value === "" ? count + 1 : count, 0);
+        return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
+    }
 
     const gameOver = () => {
-        return gameBoard.getBoard().every(value => value !== null);
+        return gameBoard.getBoard().every(value => value !== "");
     };
+
+    const checkWin = (currentSign) => {
+        return winCombos.some(combos => {
+            return combos.every(index => {
+                return gameBoard.getBoard()[index] === currentSign;
+            });
+        });
+    };
+
+    return { checkSign, checkWin, gameOver }
+})();
+
+const displayController = (() => {
+    const cells = document.querySelectorAll(".cell");
+    const cellsArray = Array.from(cells);
 
     const updateBoard = () => {
         for (let i = 0; i < cellsArray.length; i++) {
-            const marker = gameBoard.getBoard()[i]
-            if (gameBoard.getBoard()[i] !== "") {
-                cellsArray[i].classList.add(marker)
+            const marker = gameBoard.getBoard()[i];
+            cellsArray[i].classList.remove('x', 'o'); // Remove existing classes
+            if (marker !== "") {
+                cellsArray[i].classList.add(marker);
             }
         }
     }
 
-    return { updateBoard }
+    const placeMark = () => {
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                let cellIndex = cell.getAttribute('data-index');
+                let currentSign = gameController.checkSign()
+                gameBoard.placeMarker(cellIndex, currentSign);
+                updateBoard();
+                if (gameController.checkWin(currentSign)) {
+                    console.log (`Player ${currentSign.toUpperCase()} wins!`)
+                };
+                if (gameController.gameOver()){
+                    console.log("Draw!")
+                }
+            })
+        })
+    }
+
+    return { placeMark };
 })();
 
-gameController.updateBoard()
+displayController.placeMark();
