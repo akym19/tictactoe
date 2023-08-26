@@ -100,11 +100,12 @@ const displayController = (() => {
                 updateBoard();
                 if (gameController.checkWin(currentSign)) {
                     gameOver = true;
-                    console.log (`Player ${currentSign.toUpperCase()} wins!`)
+                    console.log (`Player ${currentSign.toUpperCase()} wins!`);
+                    return;
                 };
                 if (gameController.checkDraw()){
                     gameOver = true;
-                    console.log("Draw!")
+                    console.log("Draw!");
                 }
             })
         })
