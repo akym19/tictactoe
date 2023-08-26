@@ -54,7 +54,7 @@ const gameController = (() => {
         return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
     }
 
-    const gameOver = () => {
+    const checkDraw = () => {
         return gameBoard.getBoard().every(value => value !== "");
     };
 
@@ -66,12 +66,13 @@ const gameController = (() => {
         });
     };
 
-    return { checkSign, checkWin, gameOver }
+    return { checkSign, checkWin, checkDraw }
 })();
 
 const displayController = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellsArray = Array.from(cells);
+    const gameBoardElement = document.getElementById("gameBoard");
 
     const updateBoard = () => {
         for (let i = 0; i < cellsArray.length; i++) {
@@ -81,19 +82,28 @@ const displayController = (() => {
                 cellsArray[i].classList.add(marker);
             }
         }
+        const currentSign = gameController.checkSign();
+        gameBoardElement.classList.remove('x', 'o');
+        gameBoardElement.classList.add(currentSign);
     }
+
+    let gameOver = false;
 
     const placeMark = () => {
         cells.forEach(cell => {
             cell.addEventListener('click', () => {
+                if (gameOver) return;
+
                 let cellIndex = cell.getAttribute('data-index');
                 let currentSign = gameController.checkSign()
                 gameBoard.placeMarker(cellIndex, currentSign);
                 updateBoard();
                 if (gameController.checkWin(currentSign)) {
+                    gameOver = true;
                     console.log (`Player ${currentSign.toUpperCase()} wins!`)
                 };
-                if (gameController.gameOver()){
+                if (gameController.checkDraw()){
+                    gameOver = true;
                     console.log("Draw!")
                 }
             })
