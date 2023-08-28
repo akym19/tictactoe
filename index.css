@@ -6,20 +6,17 @@
 }
 
 :root {
-    --cell-size: 100px;
+    --cell-size: 150px;
     --mark-size: calc(var(--cell-size) * 0.9);
 }
 
 body {
     background-image: url('paper-bg.jpg');
     background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .gameBoard {
-    height: 100vh;
+    height: 65vh;
     width: 100vw;
     display: grid;
     align-content: center;
@@ -118,11 +115,106 @@ body {
 .gameBoard.o .cell:not(.x):not(.o):hover::after {
     width: calc(var(--mark-size) * 0.7);
     height: calc(var(--mark-size) * 0.7);
-    background-color: lightgrey;
+    background-color: lightgray;
 }
 
-h1 {
-    font-size: 100px;
-    position: absolute;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container #gameTitle {
+    font-size: clamp(3.125rem, -0.7813rem + 12.5vw, 6.25rem);
+    margin-top: 20px;
+}
+
+.container#container.hidden {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.modal {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(10vw, 25em, 100vw);
+    padding: 2%;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.30);
+    border-radius: 10px;
+    
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.5s;
+
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(10px);
+    border:1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px
+}
+
+.modal.active {
+    top: 50%;
+    visibility: visible;
+    opacity: 1;
+    transition: 0.5s;
+}
+
+.modal h2 {
+    font-size: 50px;
+}
+
+.modal p {
+    font-size: 20px;
+}
+
+.modal button {
+    width: 140px;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 20px;
+    transition: all 0.5s;
+}
+
+.modal button:hover {
+    translate: 0 -5px;
+}
+
+#resultsMessage {
+    font-size: clamp(3.125rem, -0.7813rem + 12.5vw, 6.25rem);
+}
+
+#results {
+    visibility: hidden;
+    transform: translateY(-50px); /* Initial position for transition */
+    transition: transform 0.5s, visibility 0.5s; /* Include both properties in the transition */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#results.active {
+    visibility: visible;
+    transform: translateY(0); /* Target position for transition */
+}
+
+*{
     font-family: 'Lora', serif;
+}
+
+* {
+    outline: solid 1px red;
 }

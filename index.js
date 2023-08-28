@@ -73,6 +73,11 @@ const displayController = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellsArray = Array.from(cells);
     const gameBoardElement = document.getElementById("gameBoard");
+    const startGame = document.getElementById('startGame');
+    const container = document.getElementById('container');
+    const modal = document.getElementById('modal');
+    const messageDiv = document.getElementById('results');
+    const messageElem = document.getElementById('resultsMessage');
 
     const updateBoard = () => {
         for (let i = 0; i < cellsArray.length; i++) {
@@ -100,18 +105,26 @@ const displayController = (() => {
                 updateBoard();
                 if (gameController.checkWin(currentSign)) {
                     gameOver = true;
-                    console.log (`Player ${currentSign.toUpperCase()} wins!`);
+                    messageDiv.classList.toggle('active');
+                    messageElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
                     return;
                 };
                 if (gameController.checkDraw()){
                     gameOver = true;
-                    console.log("Draw!");
+                    messageDiv.classList.toggle('active');
+                    messageElem.textContent = "Draw!";
                 }
             })
         })
     }
 
-    return { placeMark };
-})();
+    const toggle = () => {
+        container.classList.toggle('hidden');
+        modal.classList.toggle('active')
+    }
 
-displayController.placeMark();
+    startGame.addEventListener('click', toggle)
+    startGame.addEventListener('click', placeMark)
+
+    // return { placeMark };
+})();

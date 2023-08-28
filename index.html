@@ -8,17 +8,28 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <h1>Tic-Tac-Toe</h1>
-    <div class="gameBoard x" id="gameBoard">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
+    <div class="container hidden" id="container">
+        <h1 id="gameTitle">Tic-Tac-Toe</h1>
+        <div class="gameBoard x" id="gameBoard">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div id="results">
+            <button type="button">Reset</button>
+            <h1 id="resultsMessage"></h1>
+        </div>
+    </div>
+    <div class="modal active" id="modal">
+        <h2>Welcome to Tic-Tac-Toe!</h2>
+        <p>Let's play and have some fun!</p>
+        <button type="button" id="startGame">Let's Play!</button>
     </div>
 </body>
 </html>
