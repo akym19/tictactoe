@@ -6,11 +6,7 @@ const playerFactory = function (playerMark) {
 
 const gameBoard = (() => {
     const boardSize = 3;
-    const board = new Array(boardSize * boardSize).fill("");
-    // const board = 
-    // ["x", "o", "x",
-    //  "o", "", "",
-    //  "", "", ""]
+    const board = Array(boardSize * boardSize).fill("");
 
     const getBoard = () => {
        return board;
@@ -22,17 +18,11 @@ const gameBoard = (() => {
         }
     }
 
-    const getMarker = (index) => {
-        return index > board.length ? undefined : board[index];
-    }
-
     const resetBoard = () => {
-        for (let i = 0; i < board.length; i++) {
-            board[i] = "";
-        }
+        board.fill("");
     }
 
-    return { getBoard, placeMarker, getMarker, resetBoard }
+    return { getBoard, placeMarker, resetBoard }
 })();
 
 const gameController = (() => {
@@ -55,7 +45,7 @@ const gameController = (() => {
     }
 
     const checkDraw = () => {
-        return gameBoard.getBoard().every(value => value !== "");
+        return !gameBoard.getBoard().includes("");
     };
 
     const checkWin = (currentSign) => {
@@ -78,6 +68,14 @@ const displayController = (() => {
     const modal = document.getElementById('modal');
     const messageDiv = document.getElementById('results');
     const messageElem = document.getElementById('resultsMessage');
+    const resetButton = document.getElementById('reset');
+
+    const playAgain = () => {
+        gameOver = false;
+        gameBoard.resetBoard();
+        messageDiv.classList.toggle('active');
+        updateBoard();
+    }
 
     const updateBoard = () => {
         for (let i = 0; i < cellsArray.length; i++) {
@@ -120,11 +118,14 @@ const displayController = (() => {
 
     const toggle = () => {
         container.classList.toggle('hidden');
-        modal.classList.toggle('active')
+        modal.classList.toggle('active');
     }
 
-    startGame.addEventListener('click', toggle)
-    startGame.addEventListener('click', placeMark)
+    const initializeGame = () => {
+        toggle();
+        placeMark();
+    };
 
-    // return { placeMark };
+    startGame.addEventListener('click', initializeGame);
+    resetButton.addEventListener('click', playAgain);
 })();

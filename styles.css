@@ -6,7 +6,7 @@
 }
 
 :root {
-    --cell-size: 150px;
+    --cell-size: 130px;
     --mark-size: calc(var(--cell-size) * 0.9);
 }
 
@@ -16,7 +16,7 @@ body {
 }
 
 .gameBoard {
-    height: 65vh;
+    height: 60vh;
     width: 100vw;
     display: grid;
     align-content: center;
@@ -122,6 +122,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .container #gameTitle {
@@ -215,6 +216,21 @@ body {
     font-family: 'Lora', serif;
 }
 
-* {
-    outline: solid 1px red;
+#reset {
+    width: 140px;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 20px;
+    transition: all 0.5s;
 }
+
+#reset:hover {
+    translate: 0 -5px;
+}
+
+/* * {
+    outline: solid 1px red;
+} */
