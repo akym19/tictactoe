@@ -8,9 +8,7 @@ const gameBoard = (() => {
     const boardSize = 3;
     const board = Array(boardSize * boardSize).fill("");
 
-    const getBoard = () => {
-       return board;
-    }
+    const getBoard = () => board;
 
     const placeMarker = (index, marker) => {
         if (index >= 0 && index < board.length && board[index] === "") {
@@ -18,9 +16,7 @@ const gameBoard = (() => {
         }
     }
 
-    const resetBoard = () => {
-        board.fill("");
-    }
+    const resetBoard = () => board.fill("");
 
     return { getBoard, placeMarker, resetBoard }
 })();
@@ -56,14 +52,26 @@ const gameController = (() => {
         });
     };
 
-    return { checkSign, checkWin, checkDraw }
+    const makeAImove = () => {
+        const board = gameBoard.getBoard();
+        const blanks = [];
+        board.forEach((element, index) => {
+            if (element === '') {
+                blanks.push(index);
+            }
+          });
+        const random = Math.floor(Math.random() * blanks.length);
+        return blanks[random];
+    }
+
+    return { checkSign, checkWin, checkDraw, makeAImove }
 })();
 
 const displayController = (() => {
     const cells = document.querySelectorAll(".cell");
     const cellsArray = Array.from(cells);
     const gameBoardElement = document.getElementById("gameBoard");
-    const startGame = document.getElementById('startGame');
+    const startGame = document.querySelectorAll('.startGame');
     const container = document.getElementById('container');
     const modal = document.getElementById('modal');
     const messageDiv = document.getElementById('results');
@@ -91,29 +99,48 @@ const displayController = (() => {
     }
 
     let gameOver = false;
+    let aI = false;
 
     const placeMark = () => {
         cells.forEach(cell => {
             cell.addEventListener('click', () => {
                 if (gameOver) return;
-
+    
                 let cellIndex = cell.getAttribute('data-index');
-                let currentSign = gameController.checkSign()
+                let currentSign = gameController.checkSign();
                 gameBoard.placeMarker(cellIndex, currentSign);
                 updateBoard();
+    
                 if (gameController.checkWin(currentSign)) {
                     gameOver = true;
                     messageDiv.classList.toggle('active');
                     messageElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
                     return;
-                };
-                if (gameController.checkDraw()){
+                }
+    
+                if (gameController.checkDraw()) {
                     gameOver = true;
                     messageDiv.classList.toggle('active');
                     messageElem.textContent = "Draw!";
+                    return;
                 }
-            })
-        })
+    
+                // After the player's move, check if the game is still ongoing
+                if (!gameOver && aI) {
+                    setTimeout(() => {
+                        currentSign = gameController.checkSign();
+                        gameBoard.placeMarker(gameController.makeAImove(), currentSign);
+                        updateBoard();
+    
+                        if (gameController.checkWin(currentSign)) {
+                            gameOver = true;
+                            messageDiv.classList.toggle('active');
+                            messageElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
+                        }
+                    }, 1000);
+                }
+            });
+        });
     }
 
     const toggle = () => {
@@ -121,11 +148,16 @@ const displayController = (() => {
         modal.classList.toggle('active');
     }
 
-    const initializeGame = () => {
+    const initializeGame = (e) => {
         toggle();
         placeMark();
+        if (e.target.id === "vsAI") {
+            aI = true;
+        }
     };
 
-    startGame.addEventListener('click', initializeGame);
+    Array.from(startGame).forEach(startBtn => {
+        startBtn.addEventListener('click', initializeGame)
+    });
     resetButton.addEventListener('click', playAgain);
 })();
