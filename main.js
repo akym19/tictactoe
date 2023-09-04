@@ -64,7 +64,28 @@ const gameController = (() => {
         return blanks[random];
     }
 
-    return { checkSign, checkWin, checkDraw, makeAImove }
+    let gameOver = false;
+
+    const getIsOver = () => gameOver;
+
+    const resetGame = () => gameOver = false;
+
+    const checkResults = (currentSign, msgDiv, msgElem) => {
+        if (checkWin(currentSign)){
+            gameOver = true;
+            msgDiv.classList.toggle('active');
+            msgElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
+            return;
+        }
+        if (checkDraw()) {
+            gameOver = true;
+            msgDiv.classList.toggle('active');
+            msgElem.textContent = "Draw!";
+            return;
+        }
+    }
+
+    return { checkSign, checkResults, makeAImove, getIsOver, resetGame }
 })();
 
 const displayController = (() => {
@@ -79,7 +100,7 @@ const displayController = (() => {
     const resetButton = document.getElementById('reset');
 
     const playAgain = () => {
-        gameOver = false;
+        gameController.resetGame();
         gameBoard.resetBoard();
         messageDiv.classList.toggle('active');
         updateBoard();
@@ -98,45 +119,26 @@ const displayController = (() => {
         gameBoardElement.classList.add(currentSign);
     }
 
-    let gameOver = false;
     let aI = false;
 
     const placeMark = () => {
         cells.forEach(cell => {
             cell.addEventListener('click', () => {
-                if (gameOver) return;
+                if (gameController.getIsOver()) return;
     
                 let cellIndex = cell.getAttribute('data-index');
                 let currentSign = gameController.checkSign();
                 gameBoard.placeMarker(cellIndex, currentSign);
                 updateBoard();
     
-                if (gameController.checkWin(currentSign)) {
-                    gameOver = true;
-                    messageDiv.classList.toggle('active');
-                    messageElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
-                    return;
-                }
-    
-                if (gameController.checkDraw()) {
-                    gameOver = true;
-                    messageDiv.classList.toggle('active');
-                    messageElem.textContent = "Draw!";
-                    return;
-                }
-    
-                // After the player's move, check if the game is still ongoing
-                if (!gameOver && aI) {
+                gameController.checkResults(currentSign, messageDiv, messageElem);
+
+                if (!gameController.getIsOver() && aI) {
                     setTimeout(() => {
                         currentSign = gameController.checkSign();
                         gameBoard.placeMarker(gameController.makeAImove(), currentSign);
                         updateBoard();
-    
-                        if (gameController.checkWin(currentSign)) {
-                            gameOver = true;
-                            messageDiv.classList.toggle('active');
-                            messageElem.textContent = `Player ${currentSign.toUpperCase()} wins!`;
-                        }
+                        gameController.checkResults(currentSign, messageDiv, messageElem);
                     }, 1000);
                 }
             });
